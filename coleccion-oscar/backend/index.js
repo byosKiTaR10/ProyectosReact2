@@ -27,13 +27,14 @@ app.get('/', function (req, res) {
 //Creación del endpoint /login
 //llama al fichero login.js usando el método getUserData pasándole
 //el login (user) y la contraseña (password)
-app.get('/login', async function(req, res, next) {
-    console.log(req.query)
+app.post('/login', async function(req, res, next) {
+    console.log(req.body.username, req.body.password)
     try {
-        res.json(await login.getUserData(req.query.user, req.query.password))
+        res.json(await login.getUserData(req.body.username, req.body.password))
+        
     } catch (err) {
         console.error(`Error while getting data `, err.message);
-        next(err);
+        next(err)
     }
 })
 

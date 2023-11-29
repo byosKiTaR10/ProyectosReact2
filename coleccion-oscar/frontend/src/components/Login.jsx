@@ -1,42 +1,89 @@
 // ./components/Login.js
-import React from 'react';
-import { 
-    Typography,
-    Button,
-    Container
- } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Typography,
+  Button,
+  Grid,
+  Paper,
+  Box,
+  TextField,
+  Avatar
+} from '@mui/material';
 
 const Login = () => {
-  const handleButtonClick = () => {
-    alert('¡Botón clickeado!');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
   };
 
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:3030/login', {
+      method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Inicio de sesión exitoso:', data);
+      } else {
+        console.error('Credenciales incorrectas');
+      }
+    } catch (error) {
+      console.error('Error en la comunicación con el backend:', error);
+    }
+  };
+
+
   return (
-    <Container>
-      <Typography variant="h1" color="primary">
-        Heading
-      </Typography>
-      <Typography variant="h2" color="secondary">
-        Título H2
-      </Typography>
-      <Typography variant="h3" color="textPrimary">
-        Título H3
-      </Typography>
+    <Grid container justifyContent="center" alignItems="center" style={{ height: '100vh' }}>
+      <Grid item>
+        <Paper elevation={3} style={{ padding: '20px', maxWidth: '300px' }}>
+          <Avatar />
 
-      <Button variant="text" color="primary">
-        Botón Texto
-      </Button>
-      <Button variant="contained" color="secondary">
-        Botón Contenido
-      </Button>
-      <Button variant="outlined" color="primary">
-        Botón Contorno
-      </Button>
+          <Typography variant="h5" align="center" gutterBottom>
+            Iniciar sesión
+          </Typography>
 
-      <Button variant="contained" color="primary" onClick={handleButtonClick}>
-        Botón con Alert
-      </Button>
-    </Container>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Usuario"
+              fullWidth
+              margin="normal"
+              value={username}
+              onChange={handleUsernameChange}
+            />
+
+            <TextField
+              label="Contraseña"
+              type="password"
+              fullWidth
+              margin="normal"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+
+            <Box mt={2}>
+              <Button type="submit" variant="contained" color="primary" fullWidth>
+                Iniciar sesión
+              </Button>
+            </Box>
+          </form>
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
 
